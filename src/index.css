@@ -1,11 +1,17 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
+@theme {
+  --font-heading: 'Oswald', sans-serif;
+  --font-text: 'Inter Tight', sans-serif;
+
+  --color-brand-blue: #4148fe;
+  --color-brand-brown: #331307;
+  --color-brand-orange: #ff6f40;
+  --color-brand-yellow: #fedf41;
+  --color-brand-cream: #ebebeb;
+}
+
 @layer components {
-  .main-container {
-    @apply container mx-auto p-6 flex flex-col items-center justify-center min-h-screen;
-  }
-  .wbs-gradient {
-    @apply font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6054e8] to-[#f8485e];
-  }
+
 }
