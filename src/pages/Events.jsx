@@ -1,8 +1,10 @@
+import EventList from '../components/EventList';
+
 const Events = () => {
   return (
-    <div>
+    <div className="space-y-6">
       <h1 className="font-heading text-4xl">Events</h1>
-      <p className="font-text">The list of events will go here.</p>
+      <EventList />
     </div>
   );
 };
