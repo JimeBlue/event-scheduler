@@ -13,7 +13,7 @@ const EventCard = ({ event }) => {
   return (
     <Link
       to={`/events/${event.id}`}
-      className="card group relative overflow-hidden rounded-none bg-base-100"
+      className="card group relative overflow-hidden rounded-lg bg-base-100"
     >
       <figure className="px-3 pt-3">
         <img

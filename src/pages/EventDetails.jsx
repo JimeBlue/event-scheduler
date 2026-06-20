@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { MdArrowBack } from 'react-icons/md';
+import { MdArrowBack, MdCalendarMonth } from 'react-icons/md';
+import { IoLocationSharp } from 'react-icons/io5';
 import { useEvents } from '../context/EventsContext';
 import { formatDate } from '../utils/formatDate';
+import InfoRow from '../components/InfoRow';
+import EventMap from '../components/EventMap';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
 const EventDetails = () => {
@@ -96,16 +99,10 @@ const EventDetails = () => {
             </div>
 
             {/* White content card */}
-            <div className="mt-12 rounded-2xl bg-base-100 p-6 md:p-10">
-              <p className="font-text text-lg text-brand-brown-dark">
-                {event.description}
-              </p>
+            <div className="mt-12 rounded-lg bg-base-100 p-6 md:p-10">
 
-              {/* Content grid: 1 col on mobile, 2 cols from lg.
-                  Col 1 = image. Col 2 = InfoRow stacked over EventMap. */}
-              <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-                {/* Col 1 — event image. Same LoremFlickr lock as the card so
-                    the detail image matches the one on the events list. */}
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+
                 <div>
                   <img
                     src={`https://loremflickr.com/800/600/concert,festival?lock=${event.id}`}
@@ -114,11 +111,30 @@ const EventDetails = () => {
                   />
                 </div>
 
-                {/* Col 2 — InfoRow over EventMap */}
-                <div className="flex flex-col gap-8">
-                  {/* TODO: InfoRow rows — Date & Time, Location */}
 
-                  {/* TODO: EventMap — generic map image + "Open in Google Maps" link */}
+                <div className="flex flex-col gap-8">
+                  <p className="font-text text-lg text-brand-brown-dark">
+                    {event.description}
+                  </p>
+
+                  <ul className="flex flex-col gap-6">
+                    <li className="border-b border-base-300 pb-6">
+                      <InfoRow
+                        icon={MdCalendarMonth}
+                        label="Date & Time"
+                        value={formatDate(event.date)}
+                      />
+                    </li>
+                    <li>
+                      <InfoRow
+                        icon={IoLocationSharp}
+                        label="Location"
+                        value={event.location}
+                      />
+                    </li>
+                  </ul>
+
+                  <EventMap location={event.location} />
                 </div>
               </div>
             </div>

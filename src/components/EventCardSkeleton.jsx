@@ -2,7 +2,7 @@
 // page doesn't jump when the real cards arrive (daisyUI skeleton).
 const EventCardSkeleton = () => {
   return (
-    <div className="card rounded-none bg-base-100">
+    <div className="card rounded-lg bg-base-100">
       <figure className="px-3 pt-3">
         {/* image */}
         <div className="skeleton h-48 w-full rounded-none"></div>
