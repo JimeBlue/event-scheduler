@@ -49,10 +49,24 @@
   --font-text: 'Inter Tight', sans-serif;
 
   --color-brand-blue: #4148fe;
+  --color-brand-blue-dark: #211f99;
   --color-brand-brown: #331307;
+  --color-brand-brown-dark: #160600;
   --color-brand-orange: #ff6f40;
   --color-brand-yellow: #fedf41;
   --color-brand-cream: #ebebeb;
+}
+
+/* Override Tailwind's built-in container: always centered, 2rem inline padding,
+   and capped at 1280px from lg up. Use `container` alone — no need for mx-auto/px. */
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 2rem;
+
+  @variant lg {
+    max-width: 1280px;
+  }
 }
 
 @layer components {

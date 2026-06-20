@@ -16,7 +16,7 @@ const MainLayout = () => {
       </header>
 
       {/* The matched child route renders here */}
-      <main className="mx-auto w-full max-w-5xl flex-1 p-4">
+      <main>
         <Outlet />
       </main>
 
