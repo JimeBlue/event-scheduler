@@ -1,9 +1,14 @@
 import EventList from '../components/EventList';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
+// Placeholder filters — purely visual for now, no filtering logic yet.
+// TODO: wire these up to real filtering when there's time.
+const filters = ['All Events', 'Workshops', 'Live Music'];
+const activeFilter = 'All Events';
+
 const Events = () => {
   return (
-    // Yellow spans the full width of <main>...
+
     <div className="bg-brand-yellow py-16">
 
       <div className="container py-4">
@@ -24,7 +29,23 @@ const Events = () => {
           </div>
         </div>
 
-        <div className='mt-28'>
+        {/* Filter badges (visual only) */}
+        <div className="mt-8 flex flex-wrap gap-3">
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              className={`badge badge-lg h-auto cursor-pointer rounded-lg border-none px-3 py-1.5 font-heading text-sm font-medium uppercase tracking-wide ${filter === activeFilter
+                ? 'bg-brand-blue-dark text-white'
+                : 'bg-base-100 text-brand-brown-dark'
+                }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        <div className='mt-16'>
           <EventList />
         </div>
       </div>
