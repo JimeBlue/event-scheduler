@@ -1,6 +1,49 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
+/* Custom daisyUI theme built from the EventBox brand palette.
+   base-100 = white surfaces (cards), base-200 = cream page background,
+   text is brand-brown, and brand colors drive primary/secondary/accent.
+   Forced on via <html data-theme="eventbox"> so OS dark mode can't override it. */
+@plugin "daisyui/theme" {
+  name: "eventbox";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #ebebeb;
+  --color-base-300: #d9d9d9;
+  --color-base-content: #331307;
+
+  --color-primary: #4148fe;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #ff6f40;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #fedf41;
+  --color-accent-content: #331307;
+
+  --color-neutral: #331307;
+  --color-neutral-content: #ebebeb;
+
+  --color-info: #4148fe;
+  --color-info-content: #ffffff;
+  --color-success: #16a34a;
+  --color-success-content: #ffffff;
+  --color-warning: #fedf41;
+  --color-warning-content: #331307;
+  --color-error: #dc2626;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --border: 1px;
+  --depth: 1;
+}
+
 @theme {
   --font-heading: 'Oswald', sans-serif;
   --font-text: 'Inter Tight', sans-serif;

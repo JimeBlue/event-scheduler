@@ -5,7 +5,7 @@ import { Outlet, Link } from 'react-router';
 // dedicated <Navbar /> and <Footer /> components on a later branch.
 const MainLayout = () => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-base-200">
       {/* TODO: replace with <Navbar /> (reads useAuth() for Login/Logout) */}
       <header className="border-b">
         <nav className="mx-auto flex max-w-5xl items-center justify-between p-4">
