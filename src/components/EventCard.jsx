@@ -11,12 +11,15 @@ const EventCard = ({ event }) => {
   const imageUrl = `https://loremflickr.com/400/250/concert,festival?lock=${event.id}`;
 
   return (
-    <Link to={`/events/${event.id}`} className="card rounded-none bg-base-100">
+    <Link
+      to={`/events/${event.id}`}
+      className="card group relative overflow-hidden rounded-none bg-base-100"
+    >
       <figure className="px-3 pt-3">
         <img
           src={imageUrl}
           alt={event.title}
-          className="h-48 w-full object-cover"
+          className="h-48 w-full object-cover transition-all duration-300 group-hover:h-36"
         />
       </figure>
 
@@ -43,6 +46,9 @@ const EventCard = ({ event }) => {
           <span className="line-clamp-2">{event.location}</span>
         </p>
       </div>
+
+      {/* Blue overlay that fades in on hover */}
+      <div className="pointer-events-none absolute inset-0 bg-brand-blue opacity-0 transition-opacity duration-300 group-hover:opacity-40" />
     </Link>
   );
 };
