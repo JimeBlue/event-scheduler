@@ -22,12 +22,12 @@ const EventCard = ({ event }) => {
 
       <div className="card-body gap-4">
         {/* Title */}
-        <h2 className="card-title font-heading text-2xl uppercase text-brand-brown-dark line-clamp-1 font-semibold">
+        <h2 className="card-title font-heading text-2xl uppercase tracking-wide text-brand-brown-dark line-clamp-1 font-semibold">
           {event.title}
         </h2>
 
         {/* Date — blue, with calendar icon */}
-        <p className="flex items-center gap-2 font-text text-base font-semibold uppercase tracking-normal text-brand-blue-dark">
+        <p className="flex items-center gap-2 font-heading text-base font-medium uppercase tracking-wide text-brand-blue-dark">
           <MdCalendarMonth className="size-6 shrink-0" />
           {formattedDate}
         </p>

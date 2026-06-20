@@ -25,7 +25,7 @@ const EventList = () => {
   if (events.length === 0) return <p className="font-text">No events yet.</p>;
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {events.map((event) => (
         <EventCard key={event.id} event={event} />
       ))}
