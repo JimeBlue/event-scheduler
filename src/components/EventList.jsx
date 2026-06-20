@@ -1,12 +1,21 @@
 import { useEvents } from '../context/EventsContext';
 import EventCard from './EventCard';
+import EventCardSkeleton from './EventCardSkeleton';
 
 
-// Owns the loading / error / empty states 
+// Owns the loading / error / empty states
 const EventList = () => {
   const { events, loading, error } = useEvents();
 
-  if (loading) return <p className="font-text">Loading events…</p>;
+  // While loading, show a grid of skeleton cards matching the real layout.
+  if (loading)
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <EventCardSkeleton key={i} />
+        ))}
+      </div>
+    );
 
   if (error)
     return (
