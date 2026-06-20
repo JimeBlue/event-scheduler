@@ -103,11 +103,11 @@ const EventDetails = () => {
 
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
 
-                <div>
+                <div className="h-full">
                   <img
                     src={`https://loremflickr.com/800/600/concert,festival?lock=${event.id}`}
                     alt={event.title}
-                    className="aspect-[4/3] w-full rounded-xl object-cover"
+                    className="h-full max-h-[600px] min-h-72 w-full rounded-xl object-cover"
                   />
                 </div>
 
