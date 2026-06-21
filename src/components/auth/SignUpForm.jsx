@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
 import FieldError from '../ui/FieldError';
+import PasswordInput from '../ui/PasswordInput';
 
 // One starting shape for the form, defined once. Reused to reset the form
 // and as the single object that holds every field's value.
@@ -106,13 +107,10 @@ const SignUpForm = () => {
 
       <label className="flex flex-col gap-1">
         <span className="font-text text-sm">Password</span>
-        <input
-          type="password"
-          name="password"
+        <PasswordInput
           value={formData.password}
           onChange={handleChange}
           autoComplete="new-password"
-          className="input input-bordered w-full"
           placeholder="At least 8 characters"
         />
         <FieldError message={errors.password} />
