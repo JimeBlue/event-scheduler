@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
-import FieldError from '../FieldError';
+import FieldError from '../ui/FieldError';
 
 // One starting shape for the form, defined once. Reused to reset the form
 // and as the single object that holds every field's value.

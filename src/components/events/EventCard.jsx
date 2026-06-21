@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { MdCalendarMonth } from 'react-icons/md';
 import { IoLocationSharp } from 'react-icons/io5';
-import { formatDate } from '../utils/formatDate';
+import { formatDate } from '../../utils/formatDate';
 
 // The whole card links to that event's details page (/events/:id).
 const EventCard = ({ event }) => {

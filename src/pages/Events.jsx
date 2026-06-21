@@ -1,4 +1,4 @@
-import EventList from '../components/EventList';
+import EventList from '../components/events/EventList';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
 // Placeholder filters — purely visual for now, no filtering logic yet.
