@@ -4,8 +4,8 @@ import { MdArrowBack, MdCalendarMonth } from 'react-icons/md';
 import { IoLocationSharp } from 'react-icons/io5';
 import { useEvents } from '../context/EventsContext';
 import { formatDate } from '../utils/formatDate';
-import InfoRow from '../components/InfoRow';
-import EventMap from '../components/EventMap';
+import InfoRow from '../components/ui/InfoRow';
+import EventMap from '../components/events/EventMap';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
 const EventDetails = () => {

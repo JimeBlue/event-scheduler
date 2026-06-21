@@ -1,5 +1,5 @@
 import { MdOpenInNew } from 'react-icons/md';
-import mapImage from '../assets/map.png';
+import mapImage from '../../assets/map.png';
 
 // We don't trust the event's lat/long (some seed records have them swapped),
 // so we skip coordinates entirely: the image is a generic decorative map, and

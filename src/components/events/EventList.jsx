@@ -1,4 +1,4 @@
-import { useEvents } from '../context/EventsContext';
+import { useEvents } from '../../context/EventsContext';
 import EventCard from './EventCard';
 import EventCardSkeleton from './EventCardSkeleton';
 
