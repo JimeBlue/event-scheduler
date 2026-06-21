@@ -76,8 +76,14 @@ const SignInForm = () => {
       // FR015: on success, send the user Home.
       navigate('/');
     } catch (err) {
-      // api.js gave us a readable message (e.g. "Invalid email or password.").
-      setError(err.message);
+      // 400/401/403 all mean the login failed on what was entered, so show one
+      // friendly message instead of the raw API text. Other failures (network,
+      // 500) keep their real message.
+      if (err.status === 400 || err.status === 401 || err.status === 403) {
+        setError('The email or password you entered is incorrect.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -87,7 +93,7 @@ const SignInForm = () => {
 
     <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Email</span>
+        <span className="font-text text-sm">Email*</span>
         <input
           type="email"
           name="email"
@@ -101,7 +107,7 @@ const SignInForm = () => {
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Password</span>
+        <span className="font-text text-sm">Password*</span>
         <PasswordInput
           value={formData.password}
           onChange={handleChange}
@@ -113,7 +119,7 @@ const SignInForm = () => {
 
       {/* FR019: the API-level error (wrong credentials, network down, etc.). */}
       {error && (
-        <div role="alert" className="alert alert-error">
+        <div role="alert" className="alert alert-error rounded-field">
           <span className="font-text">{error}</span>
         </div>
       )}
@@ -121,7 +127,7 @@ const SignInForm = () => {
       <button
         type="submit"
         disabled={submitting}
-        className="btn btn-primary mt-2"
+        className="btn mt-2 border-brand-blue-dark bg-brand-blue-dark text-white hover:bg-brand-blue"
       >
         {submitting ? 'Signing in…' : 'Sign In'}
       </button>
