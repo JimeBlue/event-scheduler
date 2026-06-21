@@ -22,7 +22,10 @@ const request = async (path, options = {}) => {
     let message = 'Request failed';
     try {
       const data = await res.json();
-      message = data.message || message;
+      // Auth endpoints report errors under `error` (e.g. "Invalid email or
+      // password."); others use `message`. Check both so the UI gets the
+      // real reason, not a generic fallback.
+      message = data.error || data.message || message;
     } catch {
       // Response had no JSON body — keep the generic message.
     }
