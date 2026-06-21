@@ -92,7 +92,7 @@ const SignUpForm = () => {
     // checks (and messages) run instead.
     <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Email</span>
+        <span className="font-text text-sm">Email*</span>
         <input
           type="email"
           name="email"
@@ -106,7 +106,7 @@ const SignUpForm = () => {
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Password</span>
+        <span className="font-text text-sm">Password*</span>
         <PasswordInput
           value={formData.password}
           onChange={handleChange}
@@ -118,7 +118,7 @@ const SignUpForm = () => {
 
       {/* FR019: the API-level error (account already exists, network down, etc.). */}
       {error && (
-        <div role="alert" className="alert alert-error">
+        <div role="alert" className="alert alert-error rounded-field">
           <span className="font-text">{error}</span>
         </div>
       )}
@@ -126,7 +126,7 @@ const SignUpForm = () => {
       <button
         type="submit"
         disabled={submitting}
-        className="btn btn-primary mt-2"
+        className="btn mt-2 border-brand-blue-dark bg-brand-blue-dark text-white hover:bg-brand-blue"
       >
         {submitting ? 'Creating account…' : 'Sign Up'}
       </button>
