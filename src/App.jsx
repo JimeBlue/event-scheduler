@@ -4,8 +4,7 @@ import ProtectedLayout from './layouts/ProtectedLayout';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import EventDetails from './pages/EventDetails';
-import SignUp from './pages/SignUp';
-import SignIn from './pages/SignIn';
+import Auth from './pages/Auth';
 import CreateEvent from './pages/CreateEvent';
 import NotFound from './pages/NotFound';
 
@@ -20,8 +19,9 @@ const App = () => {
           <Route index element={<Events />} />
           <Route path=":id" element={<EventDetails />} />
         </Route>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<SignIn />} />
+        {/* Both routes render the same tabbed page; the path picks the tab. */}
+        <Route path="/login" element={<Auth />} />
+        <Route path="/signup" element={<Auth defaultTab="signup" />} />
 
         {/* Protected routes (guarded by ProtectedLayout) */}
         <Route element={<ProtectedLayout />}>

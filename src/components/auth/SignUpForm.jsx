@@ -10,7 +10,10 @@ import PasswordInput from '../ui/PasswordInput';
 // and as the single object that holds every field's value.
 const initialFormData = { email: '', password: '' };
 
-const SignUpForm = () => {
+// `onSuccess` lets a parent (the tabbed Auth page) react to a successful
+// signup — e.g. switch to the Sign In tab. If it isn't passed, we fall back to
+// navigating to /login so the form still works on its own.
+const SignUpForm = ({ onSuccess }) => {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
@@ -78,8 +81,13 @@ const SignUpForm = () => {
       // signup() hits POST /users and creates the account. The API returns
       // NO token, so this does NOT log the user in.
       await signup(formData.email, formData.password);
-      // FR014: on success, send the user to Sign-In to actually log in.
-      navigate('/login');
+      // FR014: signup doesn't log the user in, so send them to Sign-In. On the
+      // tabbed Auth page that's a tab switch; standalone it's a navigation.
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/login');
+      }
     } catch (err) {
       // 409 means the email is already registered. Show a friendly message that
       // also points the user to signing in, instead of the raw "User Already
