@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
-import { FiChevronDown, FiMenu, FiUser, FiX } from 'react-icons/fi';
+import { FiChevronDown, FiMenu, FiPlus, FiUser, FiX } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
 // The two primary nav links, defined once and reused in the desktop center
@@ -18,6 +18,10 @@ const Header = () => {
   // self-contained in the Header.
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+
+  // "Create event" gates on auth: logged-in users go straight to the form,
+  // everyone else is sent to log in first.
+  const createEventTo = isAuthenticated ? '/events/new' : '/login';
 
   // While the slide-over is open: close on Escape and lock background scroll.
   useEffect(() => {
@@ -85,8 +89,12 @@ const Header = () => {
 
         {/* RIGHT: desktop auth area + mobile hamburger */}
         <div className="navbar-end">
-          {/* Desktop auth (hidden on mobile) */}
-          <div className="hidden lg:flex">
+          {/* Desktop CTA + auth (hidden on mobile) */}
+          <div className="hidden items-center gap-2 lg:flex">
+            <Link to={createEventTo} className="btn btn-primary gap-2">
+              <FiPlus className="h-4 w-4" />
+              Create event
+            </Link>
             {isAuthenticated ? (
               // Logged in: user icon + email, opening a dropdown of account actions.
               <div className="dropdown dropdown-end">
@@ -185,6 +193,18 @@ const Header = () => {
             </li>
           )}
         </ul>
+
+        {/* Create event CTA, below the auth section */}
+        <div className="px-4 pb-4">
+          <Link
+            to={createEventTo}
+            onClick={closeMenu}
+            className="btn btn-primary w-full gap-2"
+          >
+            <FiPlus className="h-4 w-4" />
+            Create event
+          </Link>
+        </div>
       </aside>
     </header>
   );
