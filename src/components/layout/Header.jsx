@@ -1,60 +1,70 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
+import { FiChevronDown, FiMenu, FiUser, FiX } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
-// The two primary nav links, defined once and reused in both the mobile
-// dropdown and the centered desktop menu so they can't drift apart.
+// The two primary nav links, defined once and reused in the desktop center
+// menu and the mobile slide-over so the two can't drift apart.
 const navLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/events', label: 'All Events' },
 ];
 
 const Header = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Mobile slide-over open/closed state. Kept here so the whole thing stays
+  // self-contained in the Header.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
+
+  // While the slide-over is open: close on Escape and lock background scroll.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   // Drop the token, then send the user back home so they never linger on a
   // page they can no longer access.
   const handleLogout = () => {
+    closeMenu();
     logout();
     navigate('/');
   };
 
+  // The logged-in account actions, shared by the desktop dropdown and the
+  // mobile slide-over.
+  const accountMenuItems = (
+    <>
+      <li>
+        <Link to="/events/new">Create event</Link>
+      </li>
+      <li>
+        {/* TODO: route not built yet — placeholder for now. */}
+        <button type="button">My events</button>
+      </li>
+      <li>
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
+      </li>
+    </>
+  );
+
   return (
     <header className="border-b border-base-300 bg-base-100">
       <div className="navbar container">
-        {/* LEFT: hamburger (mobile only) + logo */}
+        {/* LEFT: logo */}
         <div className="navbar-start">
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content z-10 mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-            >
-              {navLinks.map(({ to, label, end }) => (
-                <li key={to}>
-                  <NavLink to={to} end={end}>
-                    {label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           <Link to="/" className="font-heading text-2xl text-brand-blue">
             EventBox
           </Link>
@@ -73,24 +83,109 @@ const Header = () => {
           </ul>
         </div>
 
-        {/* RIGHT: auth toggle */}
-        <div className="navbar-end gap-2">
-          {isAuthenticated ? (
-            <button type="button" onClick={handleLogout} className="btn btn-ghost">
-              Logout
-            </button>
-          ) : (
-            <>
-              <Link to="/login" className="btn btn-ghost">
-                Login
+        {/* RIGHT: desktop auth area + mobile hamburger */}
+        <div className="navbar-end">
+          {/* Desktop auth (hidden on mobile) */}
+          <div className="hidden lg:flex">
+            {isAuthenticated ? (
+              // Logged in: user icon + email, opening a dropdown of account actions.
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn btn-ghost gap-2">
+                  <FiUser className="h-5 w-5" />
+                  <span>{user?.email}</span>
+                  <FiChevronDown className="h-4 w-4" />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content z-10 mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+                >
+                  {accountMenuItems}
+                </ul>
+              </div>
+            ) : (
+              // Logged out: single control that opens the login page (tabbed).
+              <Link to="/login" className="btn btn-ghost gap-2">
+                <FiUser className="h-5 w-5" />
+                <span>Sign in / Sign up</span>
               </Link>
-              <Link to="/signup" className="btn btn-primary">
-                Sign Up
-              </Link>
-            </>
-          )}
+            )}
+          </div>
+
+          {/* Mobile hamburger (hidden on desktop) — opens the slide-over */}
+          <button
+            type="button"
+            className="btn btn-ghost lg:hidden"
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+          >
+            <FiMenu className="h-5 w-5" />
+          </button>
         </div>
       </div>
+
+      {/* MOBILE SLIDE-OVER (below lg). Self-contained: a fixed panel that
+          slides in from the right with a dimmed backdrop, toggled by state. */}
+
+      {/* Backdrop — click to close. Fades in/out and ignores clicks when shut. */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden ${
+          menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      {/* Panel — slides in from the right (translate-x). */}
+      <aside
+        className={`fixed inset-y-0 right-0 z-50 flex w-80 max-w-[80%] flex-col bg-base-100 shadow-xl transition-transform duration-300 lg:hidden ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        aria-label="Mobile menu"
+      >
+        <div className="flex items-center justify-between border-b border-base-300 p-4">
+          <span className="font-heading text-xl text-brand-blue">Menu</span>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            aria-label="Close menu"
+            onClick={closeMenu}
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Any click inside the menu closes the slide-over (then navigates). */}
+        <ul className="menu w-full gap-1 p-4 font-text" onClick={closeMenu}>
+          {navLinks.map(({ to, label, end }) => (
+            <li key={to}>
+              <NavLink to={to} end={end}>
+                {label}
+              </NavLink>
+            </li>
+          ))}
+
+          <div className="divider my-2" />
+
+          {isAuthenticated ? (
+            <>
+              <li className="menu-title flex-row items-center gap-2">
+                <FiUser className="h-5 w-5" />
+                <span className="flex-1">{user?.email}</span>
+                <FiChevronDown className="h-4 w-4" />
+              </li>
+              {accountMenuItems}
+            </>
+          ) : (
+            <li>
+              <Link to="/login">
+                <FiUser className="h-5 w-5" />
+                Sign in / Sign up
+              </Link>
+            </li>
+          )}
+        </ul>
+      </aside>
     </header>
   );
 };
