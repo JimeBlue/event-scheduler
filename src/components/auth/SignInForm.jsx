@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
 import FieldError from '../ui/FieldError';
@@ -13,6 +13,11 @@ const initialFormData = { email: '', password: '' };
 const SignInForm = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Where to go after a successful login: the page the user was trying to reach
+  // (set by the route guard or the "Create event" button), or Home by default.
+  const from = location.state?.from?.pathname || '/';
 
 
   const [formData, setFormData] = useState(initialFormData);
@@ -74,8 +79,8 @@ const SignInForm = () => {
       // login() hits POST /auth/login, stores the token, and flips
       // isAuthenticated to true. If it throws, we never navigate.
       await login(formData.email, formData.password);
-      // FR015: on success, send the user Home.
-      navigate('/');
+      // FR015: on success, send the user to where they were headed (or Home).
+      navigate(from, { replace: true });
     } catch (err) {
       // 400/401/403 all mean the login failed on what was entered, so show one
       // friendly message instead of the raw API text. Other failures (network,

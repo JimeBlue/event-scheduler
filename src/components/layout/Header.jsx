@@ -20,8 +20,12 @@ const Header = () => {
   const closeMenu = () => setMenuOpen(false);
 
   // "Create event" gates on auth: logged-in users go straight to the form,
-  // everyone else is sent to log in first.
+  // everyone else is sent to log in first — carrying the intended destination
+  // so the login form can forward them on afterwards.
   const createEventTo = isAuthenticated ? '/events/new' : '/login';
+  const createEventState = isAuthenticated
+    ? undefined
+    : { from: { pathname: '/events/new' } };
 
   // While the slide-over is open: close on Escape and lock background scroll.
   useEffect(() => {
@@ -91,7 +95,7 @@ const Header = () => {
         <div className="navbar-end">
           {/* Desktop CTA + auth (hidden on mobile) */}
           <div className="hidden items-center gap-2 lg:flex">
-            <Link to={createEventTo} className="btn btn-primary gap-2">
+            <Link to={createEventTo} state={createEventState} className="btn btn-primary gap-2">
               <FiPlus className="h-4 w-4" />
               Create event
             </Link>
@@ -198,6 +202,7 @@ const Header = () => {
         <div className="px-4 pb-4">
           <Link
             to={createEventTo}
+            state={createEventState}
             onClick={closeMenu}
             className="btn btn-primary w-full gap-2"
           >
