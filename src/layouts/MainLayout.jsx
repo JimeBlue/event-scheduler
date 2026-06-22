@@ -1,19 +1,13 @@
-import { Outlet, Link } from 'react-router';
+import { Outlet } from 'react-router';
+import Header from '../components/layout/Header';
 
 // The outer shell shown on every page: header + page content + footer.
-// TODO:  The header/footer are placeholders for now; they'll be extracted into
-// dedicated <Navbar /> and <Footer /> components on a later branch.
+// TODO: the footer is still a placeholder; it'll be extracted into a
+// dedicated <Footer /> component on a later branch.
 const MainLayout = () => {
   return (
     <div className="flex min-h-screen flex-col bg-base-200">
-      {/* TODO: replace with <Navbar /> (reads useAuth() for Login/Logout) */}
-      <header className="border-b">
-        <nav className="mx-auto flex max-w-5xl items-center justify-between p-4">
-          <Link to="/" className="font-heading text-2xl text-brand-blue">
-            EventBox
-          </Link>
-        </nav>
-      </header>
+      <Header />
 
       {/* The matched child route renders here */}
       <main>
