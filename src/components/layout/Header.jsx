@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
-import { FiChevronDown, FiMenu, FiPlus, FiUser, FiX } from 'react-icons/fi';
+import {
+  FiCalendar,
+  FiChevronDown,
+  FiLogOut,
+  FiMenu,
+  FiPlus,
+  FiPlusSquare,
+  FiUser,
+  FiX,
+} from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 // The two primary nav links, defined once and reused in the desktop center
 // menu and the mobile slide-over so the two can't drift apart.
@@ -9,6 +19,18 @@ const navLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/events', label: 'All Events' },
 ];
+
+// NavLink sets aria-current="page" on the active route — use that to underline
+// the link for the page you're on. Shared by the desktop and mobile menus.
+const navLinkClass =
+  'text-brand-brown-dark uppercase tracking-wide decoration-brand-blue-dark decoration-2 hover:bg-transparent! focus:bg-transparent! focus-visible:bg-transparent! active:bg-transparent! aria-[current=page]:underline aria-[current=page]:underline-offset-8';
+
+// Circular avatar showing the first letter of the user's email.
+const EmailAvatar = ({ email }) => (
+  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange font-semibold uppercase text-white">
+    {email?.[0] ?? '?'}
+  </span>
+);
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -54,14 +76,21 @@ const Header = () => {
   const accountMenuItems = (
     <>
       <li>
-        <Link to="/events/new">Create event</Link>
+        <Link to="/events/new">
+          <FiPlusSquare className="h-5 w-5" />
+          Create event
+        </Link>
       </li>
       <li>
         {/* TODO: route not built yet — placeholder for now. */}
-        <button type="button">My events</button>
+        <button type="button">
+          <FiCalendar className="h-5 w-5" />
+          My events
+        </button>
       </li>
       <li>
         <button type="button" onClick={handleLogout}>
+          <FiLogOut className="h-5 w-5" />
           Logout
         </button>
       </li>
@@ -69,21 +98,21 @@ const Header = () => {
   );
 
   return (
-    <header className="border-b border-base-300 bg-base-100">
-      <div className="navbar container">
+    <header className="border-b border-base-300 bg-base-100 font-heading">
+      <div className="navbar container h-20 min-h-20">
         {/* LEFT: logo */}
         <div className="navbar-start">
-          <Link to="/" className="font-heading text-2xl text-brand-blue">
-            EventBox
+          <Link to="/" aria-label="EventBox home">
+            <img src={logo} alt="EventBox" className="h-28 w-auto" />
           </Link>
         </div>
 
         {/* CENTER: primary nav, desktop only */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal gap-1 px-1 font-text">
+          <ul className="menu menu-horizontal gap-1 px-1">
             {navLinks.map(({ to, label, end }) => (
               <li key={to}>
-                <NavLink to={to} end={end}>
+                <NavLink to={to} end={end} className={navLinkClass}>
                   {label}
                 </NavLink>
               </li>
@@ -94,17 +123,27 @@ const Header = () => {
         {/* RIGHT: desktop auth area + mobile hamburger */}
         <div className="navbar-end">
           {/* Desktop CTA + auth (hidden on mobile) */}
-          <div className="hidden items-center gap-2 lg:flex">
-            <Link to={createEventTo} state={createEventState} className="btn btn-primary gap-2">
+          <div className="hidden items-center gap-4 lg:flex xl:gap-8">
+            <Link
+              to={createEventTo}
+              state={createEventState}
+              className="btn gap-2 border-brand-blue-dark bg-brand-blue-dark uppercase text-white hover:border-brand-blue hover:bg-brand-blue"
+            >
               <FiPlus className="h-4 w-4" />
               Create event
             </Link>
             {isAuthenticated ? (
               // Logged in: user icon + email, opening a dropdown of account actions.
               <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-ghost gap-2">
-                  <FiUser className="h-5 w-5" />
-                  <span>{user?.email}</span>
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="flex cursor-pointer items-center gap-2"
+                >
+                  <EmailAvatar email={user?.email} />
+                  <span className="max-w-[12rem] truncate tracking-wide">
+                    {user?.email}
+                  </span>
                   <FiChevronDown className="h-4 w-4" />
                 </div>
                 <ul
@@ -141,22 +180,19 @@ const Header = () => {
 
       {/* Backdrop — click to close. Fades in/out and ignores clicks when shut. */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden ${
-          menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-        }`}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+          }`}
         onClick={closeMenu}
         aria-hidden="true"
       />
 
       {/* Panel — slides in from the right (translate-x). */}
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-80 max-w-[80%] flex-col bg-base-100 shadow-xl transition-transform duration-300 lg:hidden ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed inset-y-0 right-0 z-50 flex w-80 max-w-[80%] flex-col bg-base-100 shadow-xl transition-transform duration-300 lg:hidden ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         aria-label="Mobile menu"
       >
-        <div className="flex items-center justify-between border-b border-base-300 p-4">
-          <span className="font-heading text-xl text-brand-blue">Menu</span>
+        <div className="flex items-center justify-end border-b border-base-300 p-4">
           <button
             type="button"
             className="btn btn-ghost btn-sm"
@@ -168,10 +204,10 @@ const Header = () => {
         </div>
 
         {/* Any click inside the menu closes the slide-over (then navigates). */}
-        <ul className="menu w-full gap-1 p-4 font-text" onClick={closeMenu}>
+        <ul className="menu w-full gap-1 p-4" onClick={closeMenu}>
           {navLinks.map(({ to, label, end }) => (
             <li key={to}>
-              <NavLink to={to} end={end}>
+              <NavLink to={to} end={end} className={navLinkClass}>
                 {label}
               </NavLink>
             </li>
@@ -181,9 +217,11 @@ const Header = () => {
 
           {isAuthenticated ? (
             <>
-              <li className="menu-title flex-row items-center gap-2">
-                <FiUser className="h-5 w-5" />
-                <span className="flex-1">{user?.email}</span>
+              <li className="menu-title flex-row items-center gap-2 text-brand-brown-dark">
+                <EmailAvatar email={user?.email} />
+                <span className="min-w-0 flex-1 truncate tracking-wide">
+                  {user?.email}
+                </span>
                 <FiChevronDown className="h-4 w-4" />
               </li>
               {accountMenuItems}
@@ -204,10 +242,12 @@ const Header = () => {
             to={createEventTo}
             state={createEventState}
             onClick={closeMenu}
-            className="btn btn-primary w-full gap-2"
+            className="btn w-full gap-2 border-brand-blue-dark bg-brand-blue-dark uppercase text-white hover:border-brand-blue hover:bg-brand-blue"
           >
             <FiPlus className="h-4 w-4" />
             Create event
+            {/* Invisible twin of the icon balances the row so the label sits dead-center. */}
+            <FiPlus aria-hidden className="invisible h-4 w-4" />
           </Link>
         </div>
       </aside>
