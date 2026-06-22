@@ -29,7 +29,11 @@ const request = async (path, options = {}) => {
     } catch {
       // Response had no JSON body — keep the generic message.
     }
-    throw new Error(message);
+    // Attach the HTTP status so callers can show a friendly, status-specific
+    // message (e.g. map 401/403 on login to "incorrect email or password").
+    const err = new Error(message);
+    err.status = res.status;
+    throw err;
   }
 
   // Some endpoints (e.g. DELETE) may return an empty body.

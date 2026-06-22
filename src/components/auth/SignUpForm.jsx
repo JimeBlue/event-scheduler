@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
 import FieldError from '../ui/FieldError';
+import FormError from '../ui/FormError';
+import PasswordInput from '../ui/PasswordInput';
 
 // One starting shape for the form, defined once. Reused to reset the form
 // and as the single object that holds every field's value.
@@ -79,8 +81,14 @@ const SignUpForm = () => {
       // FR014: on success, send the user to Sign-In to actually log in.
       navigate('/login');
     } catch (err) {
-      // api.js gave us a readable message (e.g. "User Already Exist").
-      setError(err.message);
+      // 409 means the email is already registered. Show a friendly message that
+      // also points the user to signing in, instead of the raw "User Already
+      // Exist". Other failures (network, 500) keep their real message.
+      if (err.status === 409) {
+        setError('An account with this email already exists. Try signing in instead.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +99,7 @@ const SignUpForm = () => {
     // checks (and messages) run instead.
     <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Email</span>
+        <span className="font-text text-sm">Email*</span>
         <input
           type="email"
           name="email"
@@ -105,30 +113,23 @@ const SignUpForm = () => {
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Password</span>
-        <input
-          type="password"
-          name="password"
+        <span className="font-text text-sm">Password*</span>
+        <PasswordInput
           value={formData.password}
           onChange={handleChange}
           autoComplete="new-password"
-          className="input input-bordered w-full"
           placeholder="At least 8 characters"
         />
         <FieldError message={errors.password} />
       </label>
 
       {/* FR019: the API-level error (account already exists, network down, etc.). */}
-      {error && (
-        <div role="alert" className="alert alert-error">
-          <span className="font-text">{error}</span>
-        </div>
-      )}
+      <FormError message={error} />
 
       <button
         type="submit"
         disabled={submitting}
-        className="btn btn-primary mt-2"
+        className="btn mt-2 border-brand-blue-dark bg-brand-blue-dark text-white hover:bg-brand-blue"
       >
         {submitting ? 'Creating account…' : 'Sign Up'}
       </button>
