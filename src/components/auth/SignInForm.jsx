@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
 import FieldError from '../ui/FieldError';
+import FormError from '../ui/FormError';
 import PasswordInput from '../ui/PasswordInput';
 
 // One starting shape for the form, defined once. Reused to reset the form
@@ -118,11 +119,7 @@ const SignInForm = () => {
       </label>
 
       {/* FR019: the API-level error (wrong credentials, network down, etc.). */}
-      {error && (
-        <div role="alert" className="alert alert-error rounded-field">
-          <span className="font-text">{error}</span>
-        </div>
-      )}
+      <FormError message={error} />
 
       <button
         type="submit"

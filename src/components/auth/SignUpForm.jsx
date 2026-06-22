@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail } from '../../utils/validators';
 import FieldError from '../ui/FieldError';
+import FormError from '../ui/FormError';
 import PasswordInput from '../ui/PasswordInput';
 
 // One starting shape for the form, defined once. Reused to reset the form
@@ -80,8 +81,14 @@ const SignUpForm = () => {
       // FR014: on success, send the user to Sign-In to actually log in.
       navigate('/login');
     } catch (err) {
-      // api.js gave us a readable message (e.g. "User Already Exist").
-      setError(err.message);
+      // 409 means the email is already registered. Show a friendly message that
+      // also points the user to signing in, instead of the raw "User Already
+      // Exist". Other failures (network, 500) keep their real message.
+      if (err.status === 409) {
+        setError('An account with this email already exists. Try signing in instead.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -117,11 +124,7 @@ const SignUpForm = () => {
       </label>
 
       {/* FR019: the API-level error (account already exists, network down, etc.). */}
-      {error && (
-        <div role="alert" className="alert alert-error rounded-field">
-          <span className="font-text">{error}</span>
-        </div>
-      )}
+      <FormError message={error} />
 
       <button
         type="submit"
