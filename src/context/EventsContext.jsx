@@ -47,6 +47,15 @@ const EventsProvider = ({ children }) => {
     fetchEvents();
   }, []);
 
+  // Create a new event (POST /events). api.js auto-attaches the auth token, and
+  // the backend sets organizerId from it — so the caller never sends that.
+  // After it succeeds we refetch so the new event shows up in the list.
+  const createEvent = async (eventData) => {
+    const created = await api.post('/events', eventData);
+    await fetchEvents();
+    return created;
+  };
+
   // Get one event.
   const getEventById = async (id) => {
     //  If  list is already loaded, i.e. if the event I want is in memory, grabs it instantly, no request.
@@ -65,6 +74,7 @@ const EventsProvider = ({ children }) => {
         error,
         fetchEvents,
         getEventById,
+        createEvent,
         isCreateModalOpen,
         openCreateModal,
         closeCreateModal,

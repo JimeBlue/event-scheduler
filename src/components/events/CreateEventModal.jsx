@@ -1,5 +1,6 @@
 import { FiX } from 'react-icons/fi';
 import { useEvents } from '../../context/EventsContext';
+import CreateEventForm from './CreateEventForm';
 
 // daisyUI modal: visible only while `modal-open` is applied. The state lives in
 // EventsContext so the page button can open it and this component can close it.
@@ -21,10 +22,9 @@ const CreateEventModal = () => {
           <FiX className="h-5 w-5" />
         </button>
 
-        <h2 className="font-heading text-2xl">Create Event</h2>
-
-        {/* Placeholder — the create-event form will replace this next. */}
-        <p className="font-text py-4">The create event form will go here.</p>
+        {/* Only mount the form while the modal is open, so each open starts
+            with a fresh, empty form. */}
+        {isCreateModalOpen && <CreateEventForm />}
       </div>
 
       {/* Click outside the box to dismiss. */}
