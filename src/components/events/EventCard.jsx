@@ -13,13 +13,13 @@ const EventCard = ({ event }) => {
   return (
     <Link
       to={`/events/${event.id}`}
-      className="card group relative overflow-hidden rounded-lg bg-base-100"
+      className="card overflow-hidden rounded-lg bg-base-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <figure className="px-3 pt-3">
         <img
           src={imageUrl}
           alt={event.title}
-          className="h-48 w-full object-cover transition-all duration-300 group-hover:h-36"
+          className="h-48 w-full object-cover"
         />
       </figure>
 
@@ -46,9 +46,6 @@ const EventCard = ({ event }) => {
           <span className="line-clamp-2">{event.location}</span>
         </p>
       </div>
-
-      {/* Blue overlay that fades in on hover */}
-      <div className="pointer-events-none absolute inset-0 bg-brand-blue opacity-0 transition-opacity duration-300 group-hover:opacity-40" />
     </Link>
   );
 };
