@@ -14,8 +14,9 @@ const formatLabel = (value) =>
 
 // Date-only picker: Cally for the calendar UI, daisyUI's `cally` class for the
 // styling, wrapped in a daisyUI dropdown so it pops open under the trigger.
-// `value` is a "YYYY-MM-DD" string; `onChange` receives the same.
-const EventDatePicker = ({ value, onChange }) => {
+// `value` is a "YYYY-MM-DD" string; `onChange` receives the same. `min`, when
+// given, greys out (disables) any earlier day.
+const EventDatePicker = ({ value, onChange, min }) => {
   const calendarRef = useRef(null);
 
   // Cally emits a native `change` event that React's onChange prop won't catch,
@@ -54,6 +55,7 @@ const EventDatePicker = ({ value, onChange }) => {
           ref={calendarRef}
           className="cally rounded-box border border-base-300 bg-base-100 shadow-lg"
           value={value}
+          min={min}
         >
           <FiChevronLeft slot="previous" className="size-4" aria-label="Previous" />
           <FiChevronRight slot="next" className="size-4" aria-label="Next" />

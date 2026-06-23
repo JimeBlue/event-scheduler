@@ -17,6 +17,10 @@ const initialFormData = {
   longitude: '',
 };
 
+// Today as "YYYY-MM-DD" in the user's local timezone (en-CA formats this way).
+// Used as the picker's minimum so past days are greyed out.
+const today = new Date().toLocaleDateString('en-CA');
+
 const CreateEventForm = () => {
   const { createEvent, closeCreateModal } = useEvents();
 
@@ -60,6 +64,15 @@ const CreateEventForm = () => {
     if (!data.date) newErrors.date = 'Date is required.';
     if (!data.time) newErrors.time = 'Time is required.';
     if (!data.location.trim()) newErrors.location = 'Location is required.';
+
+    // The API accepts past dates, but a scheduler shouldn't. Only meaningful
+    // once both date and time are set (so we know the exact moment).
+    if (data.date && data.time) {
+      const when = new Date(`${data.date}T${data.time}`);
+      if (when.getTime() < Date.now()) {
+        newErrors.date = 'The event must be in the future.';
+      }
+    }
 
     // Coordinates are optional, but when filled the API enforces real-world
     // ranges (and throws a misleading 500 outside them), so we check here.
@@ -240,7 +253,11 @@ const CreateEventForm = () => {
               self-contained. */}
           <div className="flex flex-col gap-1">
             <span className="font-text text-sm">Date*</span>
-            <EventDatePicker value={formData.date} onChange={handleDateChange} />
+            <EventDatePicker
+              value={formData.date}
+              onChange={handleDateChange}
+              min={today}
+            />
             <FieldError message={errors.date} />
           </div>
 
