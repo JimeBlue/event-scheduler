@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { FiMapPin } from 'react-icons/fi';
 import { useEvents } from '../../context/EventsContext';
+import { geocodeAddress } from '../../services/geocode';
 import FormError from '../ui/FormError';
 import EventDatePicker from './EventDatePicker';
 
@@ -24,14 +26,67 @@ const CreateEventForm = () => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Geocoding feedback: 'idle' | 'loading' | 'success' | 'error', plus a line
+  // of text (the matched address on success, or an error message).
+  const [geoStatus, setGeoStatus] = useState('idle');
+  const [geoMessage, setGeoMessage] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Editing the address invalidates any previous lookup, so clear the
+    // feedback until the user searches again.
+    if (name === 'location') {
+      setGeoStatus('idle');
+      setGeoMessage('');
+    }
+  };
+
+  // Turn the typed address into coordinates and drop them into the lat/long
+  // fields. The user can still tweak them by hand afterwards.
+  const handleGeocode = async () => {
+    const query = formData.location.trim();
+    if (!query) return;
+
+    setGeoStatus('loading');
+    setGeoMessage('');
+
+    try {
+      const result = await geocodeAddress(query);
+      if (!result) {
+        // Wipe any coordinates from a previous search so we never submit
+        // lat/long that don't match the current address.
+        setFormData((prev) => ({ ...prev, latitude: '', longitude: '' }));
+        setGeoStatus('error');
+        setGeoMessage("We couldn't find that address. Try adding more detail.");
+        return;
+      }
+      setFormData((prev) => ({
+        ...prev,
+        latitude: result.latitude,
+        longitude: result.longitude,
+      }));
+      setGeoStatus('success');
+      setGeoMessage(result.displayName);
+    } catch (err) {
+      setGeoStatus('error');
+      setGeoMessage(err.message);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Without a date, building the ISO string below would throw a cryptic
+    // "Invalid time value". Guard it with a friendly message until the full
+    // field validation lands. (Time can be empty — it falls back to midnight.)
+    if (!formData.date) {
+      setError('Please pick a date for the event.');
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -123,17 +178,39 @@ const CreateEventForm = () => {
           </label>
         </div>
 
-        <label className="flex flex-col gap-1">
-          <span className="font-text text-sm">Location*</span>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="input input-bordered w-full"
-            placeholder="Berlin Congress Center"
-          />
-        </label>
+        <div className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1">
+            <span className="font-text text-sm">Location*</span>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+              placeholder="Venue name, street & no., ZIP code, city"
+            />
+          </label>
+
+          {/* Geocode the address into coordinates for the map. */}
+          <button
+            type="button"
+            onClick={handleGeocode}
+            disabled={geoStatus === 'loading' || !formData.location.trim()}
+            className="btn btn-sm btn-outline mt-1 w-fit gap-2"
+          >
+            <FiMapPin className="h-4 w-4" />
+            {geoStatus === 'loading' ? 'Searching…' : 'Find coordinates'}
+          </button>
+
+          {geoStatus === 'success' && (
+            <p className="font-text text-sm text-success">
+              Found: {geoMessage}
+            </p>
+          )}
+          {geoStatus === 'error' && (
+            <p className="font-text text-sm text-error">{geoMessage}</p>
+          )}
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col gap-1">
@@ -161,6 +238,10 @@ const CreateEventForm = () => {
               placeholder="13.4050"
             />
           </label>
+
+          <p className="col-span-2 font-text text-xs text-base-content/60">
+            Filled automatically with “Find coordinates”, or enter them manually.
+          </p>
         </div>
 
         {/* API/submit-level error (e.g. network down, server rejects). */}
