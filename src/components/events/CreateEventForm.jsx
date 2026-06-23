@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { FiMapPin } from 'react-icons/fi';
+import { FiClock, FiCrosshair, FiGlobe, FiMapPin } from 'react-icons/fi';
+import orangeAsterisk from '../../assets/orange-asterisk.png';
 import { useEvents } from '../../context/EventsContext';
 import { geocodeAddress } from '../../services/geocode';
 import FieldError from '../ui/FieldError';
+import FieldIcon from '../ui/FieldIcon';
 import FormError from '../ui/FormError';
 import EventDatePicker from './EventDatePicker';
 
@@ -139,7 +141,9 @@ const CreateEventForm = () => {
         // lat/long that don't match the current address.
         setFormData((prev) => ({ ...prev, latitude: '', longitude: '' }));
         setGeoStatus('error');
-        setGeoMessage("We couldn't find that address. Try adding more detail.");
+        setGeoMessage(
+          "We couldn't find that address. Try adding more detail or add them manually."
+        );
         return;
       }
       setFormData((prev) => ({
@@ -203,7 +207,21 @@ const CreateEventForm = () => {
 
   return (
     <section>
-      <h2 className="font-heading text-2xl">Create New Event</h2>
+      <div className="flex items-center gap-4">
+        <img
+          src={orangeAsterisk}
+          alt=""
+          className="h-20 w-20 shrink-0 object-contain"
+        />
+        <div>
+          <h2 className="mb-1 font-heading text-3xl font-bold text-brand-brown">
+            Create New Event
+          </h2>
+          <p className="font-text text-sm text-base-content/60">
+            Fill in the details below to bring your event to life.
+          </p>
+        </div>
+      </div>
 
       <form
         onSubmit={handleSubmit}
@@ -217,7 +235,7 @@ const CreateEventForm = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="input input-bordered w-full"
+            className="input input-bordered w-full bg-brand-blue/5 focus:outline-2 focus:outline-brand-blue"
             placeholder="Tech Meetup: AI & the Future"
           />
           <FieldError message={errors.title} />
@@ -229,7 +247,7 @@ const CreateEventForm = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="textarea textarea-bordered h-28 w-full"
+            className="textarea textarea-bordered h-28 w-full bg-brand-blue/5 focus:outline-2 focus:outline-brand-blue"
             placeholder="Tell attendees what to expect and why they should come…"
           />
           {/* Live counter on the left, error (if any) keeps the row; the count
@@ -264,13 +282,18 @@ const CreateEventForm = () => {
 
           <label className="flex flex-col gap-1">
             <span className="font-text text-sm">Time*</span>
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              className="input input-bordered w-full"
-            />
+            <span className="input input-bordered flex w-full items-center gap-3 bg-brand-blue/5 ps-1.5 focus-within:outline-2 focus-within:outline-brand-blue">
+              <FieldIcon>
+                <FiClock />
+              </FieldIcon>
+              <input
+                type="time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                className="grow bg-transparent [&::-webkit-calendar-picker-indicator]:hidden"
+              />
+            </span>
             <FieldError message={errors.time} />
           </label>
         </div>
@@ -278,14 +301,19 @@ const CreateEventForm = () => {
         <div className="flex flex-col gap-1">
           <label className="flex flex-col gap-1">
             <span className="font-text text-sm">Location*</span>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="input input-bordered w-full"
-              placeholder="Venue name, street & no., ZIP code, city"
-            />
+            <span className="input input-bordered flex w-full items-center gap-3 bg-brand-blue/5 ps-1.5 focus-within:outline-2 focus-within:outline-brand-blue">
+              <FieldIcon>
+                <FiMapPin />
+              </FieldIcon>
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="grow bg-transparent"
+                placeholder="Venue name, street & no., ZIP code, city"
+              />
+            </span>
             <FieldError message={errors.location} />
           </label>
 
@@ -294,9 +322,9 @@ const CreateEventForm = () => {
             type="button"
             onClick={handleGeocode}
             disabled={geoStatus === 'loading' || !formData.location.trim()}
-            className="btn btn-sm btn-outline mt-1 w-fit gap-2"
+            className="btn btn-sm mt-1 w-fit gap-2 border-none bg-brand-blue/5 text-brand-blue shadow-none hover:bg-brand-blue/10 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:bg-brand-blue/5 disabled:text-base-content/40"
           >
-            <FiMapPin className="h-4 w-4" />
+            <FiCrosshair className="h-4 w-4" />
             {geoStatus === 'loading' ? 'Searching…' : 'Find coordinates'}
           </button>
 
@@ -313,29 +341,39 @@ const CreateEventForm = () => {
         <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col gap-1">
             <span className="font-text text-sm">Latitude</span>
-            <input
-              type="number"
-              step="any"
-              name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
-              className="input input-bordered w-full"
-              placeholder="52.5200"
-            />
+            <span className="input input-bordered flex w-full items-center gap-3 bg-brand-blue/5 ps-1.5 focus-within:outline-2 focus-within:outline-brand-blue">
+              <FieldIcon tone="yellow">
+                <FiGlobe />
+              </FieldIcon>
+              <input
+                type="number"
+                step="any"
+                name="latitude"
+                value={formData.latitude}
+                onChange={handleChange}
+                className="grow bg-transparent"
+                placeholder="52.5200"
+              />
+            </span>
             <FieldError message={errors.latitude} />
           </label>
 
           <label className="flex flex-col gap-1">
             <span className="font-text text-sm">Longitude</span>
-            <input
-              type="number"
-              step="any"
-              name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
-              className="input input-bordered w-full"
-              placeholder="13.4050"
-            />
+            <span className="input input-bordered flex w-full items-center gap-3 bg-brand-blue/5 ps-1.5 focus-within:outline-2 focus-within:outline-brand-blue">
+              <FieldIcon tone="yellow">
+                <FiGlobe />
+              </FieldIcon>
+              <input
+                type="number"
+                step="any"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleChange}
+                className="grow bg-transparent"
+                placeholder="13.4050"
+              />
+            </span>
             <FieldError message={errors.longitude} />
           </label>
 

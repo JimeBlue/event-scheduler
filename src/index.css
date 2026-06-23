@@ -72,3 +72,15 @@
 @layer components {
 
 }
+
+/* Stop the browser's autofill from painting its own (pale blue/yellow)
+   background over a field — that made autofilled inputs look different from
+   empty ones. The very long transition defers the autofill background
+   indefinitely, so each field keeps the form's own fill. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+  transition: background-color 9999s ease-in-out 0s;
+  -webkit-text-fill-color: var(--color-base-content);
+}
