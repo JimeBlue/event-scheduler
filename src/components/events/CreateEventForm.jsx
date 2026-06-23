@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiMapPin } from 'react-icons/fi';
 import { useEvents } from '../../context/EventsContext';
 import { geocodeAddress } from '../../services/geocode';
+import FieldError from '../ui/FieldError';
 import FormError from '../ui/FormError';
 import EventDatePicker from './EventDatePicker';
 
@@ -22,7 +23,10 @@ const CreateEventForm = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  // A single API/submit-level error (per-field validation comes next).
+  // Two kinds of error, same split as the auth forms:
+  // - `errors`: per-field, client-side checks (before we ever call the API).
+  // - `error`:  a single message from the API/submit (e.g. server rejected it).
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,9 +35,47 @@ const CreateEventForm = () => {
   const [geoStatus, setGeoStatus] = useState('idle');
   const [geoMessage, setGeoMessage] = useState('');
 
+  // Validate the given data and return an errors object (empty = all good).
+  // Required fields: title, description, date, time, location. Description is
+  // required client-side by choice — the API allows it empty. Defaults to the
+  // current formData so handleSubmit can call it with no args.
+  const validate = (data = formData) => {
+    const newErrors = {};
+
+    // Title: required, and the API rejects fewer than 3 characters.
+    if (!data.title.trim()) {
+      newErrors.title = 'Title is required.';
+    } else if (data.title.trim().length < 3) {
+      newErrors.title = 'Title must be at least 3 characters.';
+    }
+
+    // Description: required (our choice), and the API caps it at 255 chars —
+    // over that it throws a misleading 500, so we catch it here first.
+    if (!data.description.trim()) {
+      newErrors.description = 'Description is required.';
+    } else if (data.description.trim().length > 255) {
+      newErrors.description = 'Description must be 255 characters or less.';
+    }
+
+    if (!data.date) newErrors.date = 'Date is required.';
+    if (!data.time) newErrors.time = 'Time is required.';
+    if (!data.location.trim()) newErrors.location = 'Location is required.';
+    return newErrors;
+  };
+
+  // Re-validate against the new data once errors are already showing, so a
+  // corrected field clears its own error live (but we don't nag before the
+  // first submit attempt). Shared by every field's change handler.
+  const revalidate = (nextFormData) => {
+    setErrors((prev) =>
+      Object.keys(prev).length === 0 ? prev : validate(nextFormData)
+    );
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const nextFormData = { ...formData, [name]: value };
+    setFormData(nextFormData);
 
     // Editing the address invalidates any previous lookup, so clear the
     // feedback until the user searches again.
@@ -41,6 +83,15 @@ const CreateEventForm = () => {
       setGeoStatus('idle');
       setGeoMessage('');
     }
+
+    revalidate(nextFormData);
+  };
+
+  // The date picker isn't a native input, so it has its own change handler.
+  const handleDateChange = (date) => {
+    const nextFormData = { ...formData, date };
+    setFormData(nextFormData);
+    revalidate(nextFormData);
   };
 
   // Turn the typed address into coordinates and drop them into the lat/long
@@ -77,24 +128,24 @@ const CreateEventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
 
-    // Without a date, building the ISO string below would throw a cryptic
-    // "Invalid time value". Guard it with a friendly message until the full
-    // field validation lands. (Time can be empty — it falls back to midnight.)
-    if (!formData.date) {
-      setError('Please pick a date for the event.');
+    // Client-side checks first — if anything's missing, show it and bail before
+    // bothering the API (this also guarantees date + time exist below).
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
+    setErrors({});
+    setError(null);
     setSubmitting(true);
 
     try {
       // The API wants one ISO date-time string. We hold the date ("YYYY-MM-DD")
       // and time ("HH:mm") in separate fields, so join them into a local
-      // datetime and let toISOString() convert it to UTC. Missing time falls
-      // back to midnight so the date alone still produces a valid value.
-      const localDateTime = `${formData.date}T${formData.time || '00:00'}`;
+      // datetime and let toISOString() convert it to UTC.
+      const localDateTime = `${formData.date}T${formData.time}`;
 
       const payload = {
         title: formData.title.trim(),
@@ -139,10 +190,11 @@ const CreateEventForm = () => {
             className="input input-bordered w-full"
             placeholder="Tech Meetup: AI & the Future"
           />
+          <FieldError message={errors.title} />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="font-text text-sm">Description</span>
+          <span className="font-text text-sm">Description*</span>
           <textarea
             name="description"
             value={formData.description}
@@ -150,6 +202,20 @@ const CreateEventForm = () => {
             className="textarea textarea-bordered h-28 w-full"
             placeholder="Tell attendees what to expect and why they should come…"
           />
+          {/* Live counter on the left, error (if any) keeps the row; the count
+              turns red once it passes the 255-char API limit. */}
+          <div className="flex items-start justify-between gap-2">
+            <FieldError message={errors.description} />
+            <span
+              className={`ml-auto shrink-0 font-text text-xs ${
+                formData.description.length > 255
+                  ? 'text-error'
+                  : 'text-base-content/60'
+              }`}
+            >
+              {formData.description.length}/255
+            </span>
+          </div>
         </label>
 
         <div className="grid grid-cols-2 gap-4">
@@ -158,12 +224,8 @@ const CreateEventForm = () => {
               self-contained. */}
           <div className="flex flex-col gap-1">
             <span className="font-text text-sm">Date*</span>
-            <EventDatePicker
-              value={formData.date}
-              onChange={(date) =>
-                setFormData((prev) => ({ ...prev, date }))
-              }
-            />
+            <EventDatePicker value={formData.date} onChange={handleDateChange} />
+            <FieldError message={errors.date} />
           </div>
 
           <label className="flex flex-col gap-1">
@@ -175,6 +237,7 @@ const CreateEventForm = () => {
               onChange={handleChange}
               className="input input-bordered w-full"
             />
+            <FieldError message={errors.time} />
           </label>
         </div>
 
@@ -189,6 +252,7 @@ const CreateEventForm = () => {
               className="input input-bordered w-full"
               placeholder="Venue name, street & no., ZIP code, city"
             />
+            <FieldError message={errors.location} />
           </label>
 
           {/* Geocode the address into coordinates for the map. */}
