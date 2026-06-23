@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { FiCalendar, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import 'cally'; // registers the <calendar-date> / <calendar-month> web components
+import FieldIcon from '../ui/FieldIcon';
 
 // Turn the picker's "YYYY-MM-DD" value into a friendly label for the trigger.
 // Parsed at local midnight so the shown day matches the picked day (no TZ drift).
@@ -41,12 +42,14 @@ const EventDatePicker = ({ value, onChange, min }) => {
       <div
         tabIndex={0}
         role="button"
-        className="input input-bordered flex w-full items-center justify-between"
+        className="input input-bordered flex w-full items-center gap-3 bg-brand-blue/5 ps-1.5 focus-within:outline-2 focus-within:outline-brand-blue"
       >
+        <FieldIcon>
+          <FiCalendar />
+        </FieldIcon>
         <span className={value ? '' : 'text-base-content/50'}>
           {value ? formatLabel(value) : 'Pick a date'}
         </span>
-        <FiCalendar className="h-4 w-4 opacity-60" />
       </div>
 
       {/* Pop-over calendar. */}
