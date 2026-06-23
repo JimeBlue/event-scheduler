@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useLocation, useParams } from 'react-router';
 import { MdArrowBack, MdCalendarMonth } from 'react-icons/md';
 import { IoLocationSharp } from 'react-icons/io5';
 import { useEvents } from '../context/EventsContext';
@@ -10,7 +10,11 @@ import bePartOfIt from '../assets/be-part-of-it.png';
 
 const EventDetails = () => {
   const { id } = useParams();
+  const location = useLocation();
   const { getEventById } = useEvents();
+  const backTo = location.state?.from || '/events';
+  const backLabel =
+    backTo === '/events/new' ? 'Back to event board' : 'Back to events';
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,11 +50,11 @@ const EventDetails = () => {
       <div className="container py-4">
         {/* Back link */}
         <Link
-          to="/events"
+          to={backTo}
           className="inline-flex items-center gap-2 font-heading text-sm font-medium uppercase tracking-wide text-brand-blue-dark hover:text-brand-blue"
         >
           <MdArrowBack className="size-5" />
-          Back to events
+          {backLabel}
         </Link>
 
         {loading && (
