@@ -60,6 +60,22 @@ const CreateEventForm = () => {
     if (!data.date) newErrors.date = 'Date is required.';
     if (!data.time) newErrors.time = 'Time is required.';
     if (!data.location.trim()) newErrors.location = 'Location is required.';
+
+    // Coordinates are optional, but when filled the API enforces real-world
+    // ranges (and throws a misleading 500 outside them), so we check here.
+    if (data.latitude !== '') {
+      const lat = Number(data.latitude);
+      if (Number.isNaN(lat) || lat < -90 || lat > 90) {
+        newErrors.latitude = 'Latitude must be between -90 and 90.';
+      }
+    }
+    if (data.longitude !== '') {
+      const lng = Number(data.longitude);
+      if (Number.isNaN(lng) || lng < -180 || lng > 180) {
+        newErrors.longitude = 'Longitude must be between -180 and 180.';
+      }
+    }
+
     return newErrors;
   };
 
@@ -288,6 +304,7 @@ const CreateEventForm = () => {
               className="input input-bordered w-full"
               placeholder="52.5200"
             />
+            <FieldError message={errors.latitude} />
           </label>
 
           <label className="flex flex-col gap-1">
@@ -301,6 +318,7 @@ const CreateEventForm = () => {
               className="input input-bordered w-full"
               placeholder="13.4050"
             />
+            <FieldError message={errors.longitude} />
           </label>
 
           <p className="col-span-2 font-text text-xs text-base-content/60">
