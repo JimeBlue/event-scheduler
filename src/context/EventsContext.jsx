@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
 
@@ -19,6 +19,23 @@ const EventsProvider = ({ children }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const openCreateModal = () => setIsCreateModalOpen(true);
   const closeCreateModal = () => setIsCreateModalOpen(false);
+
+  // A single transient toast: { message, type } or null. Reusable for any
+  // action (create now, edit/delete later). It auto-dismisses; the timer ref
+  // lets a new toast cancel the previous one's pending hide.
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
+
+  const hideToast = () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(null);
+  };
+
+  const showToast = (message, type = 'success') => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast({ message, type });
+    toastTimer.current = setTimeout(() => setToast(null), 3500);
+  };
 
   // Ask api.js for the list and store the result.
   const fetchEvents = async () => {
@@ -78,6 +95,9 @@ const EventsProvider = ({ children }) => {
         isCreateModalOpen,
         openCreateModal,
         closeCreateModal,
+        toast,
+        showToast,
+        hideToast,
       }}
     >
       {children}

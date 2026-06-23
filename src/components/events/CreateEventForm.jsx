@@ -22,7 +22,7 @@ const initialFormData = {
 const today = new Date().toLocaleDateString('en-CA');
 
 const CreateEventForm = () => {
-  const { createEvent, closeCreateModal } = useEvents();
+  const { createEvent, closeCreateModal, showToast } = useEvents();
 
 
   const [formData, setFormData] = useState(initialFormData);
@@ -190,9 +190,10 @@ const CreateEventForm = () => {
 
       await createEvent(payload);
 
-      // Reset and close on success.
+      // Reset, close, and confirm with a toast on success.
       setFormData(initialFormData);
       closeCreateModal();
+      showToast('Your event was added successfully.');
     } catch (err) {
       setError(err.message);
     } finally {
