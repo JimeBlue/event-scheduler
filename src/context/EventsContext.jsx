@@ -13,6 +13,13 @@ const EventsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Create-event modal open/closed state, driven through named actions so any
+  // component (the page button, the modal's own close control) toggles it the
+  // same way without touching the setter directly.
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const openCreateModal = () => setIsCreateModalOpen(true);
+  const closeCreateModal = () => setIsCreateModalOpen(false);
+
   // Ask api.js for the list and store the result.
   const fetchEvents = async () => {
     setLoading(true);
@@ -52,7 +59,16 @@ const EventsProvider = ({ children }) => {
 
   return (
     <EventsContext.Provider
-      value={{ events, loading, error, fetchEvents, getEventById }}
+      value={{
+        events,
+        loading,
+        error,
+        fetchEvents,
+        getEventById,
+        isCreateModalOpen,
+        openCreateModal,
+        closeCreateModal,
+      }}
     >
       {children}
     </EventsContext.Provider>
