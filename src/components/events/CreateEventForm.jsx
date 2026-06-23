@@ -291,7 +291,11 @@ const CreateEventForm = () => {
                 name="time"
                 value={formData.time}
                 onChange={handleChange}
-                className="grow bg-transparent [&::-webkit-calendar-picker-indicator]:hidden"
+                // The native indicator is hidden (we show our own FiClock), but
+                // that indicator is what opens the time dropdown. Open it
+                // ourselves on click so the options still appear.
+                onClick={(e) => e.currentTarget.showPicker?.()}
+                className="grow cursor-pointer bg-transparent [&::-webkit-calendar-picker-indicator]:hidden"
               />
             </span>
             <FieldError message={errors.time} />
