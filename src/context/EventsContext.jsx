@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
 
@@ -12,6 +12,30 @@ const EventsProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Create-event modal open/closed state, driven through named actions so any
+  // component (the page button, the modal's own close control) toggles it the
+  // same way without touching the setter directly.
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const openCreateModal = () => setIsCreateModalOpen(true);
+  const closeCreateModal = () => setIsCreateModalOpen(false);
+
+  // A single transient toast: { message, type } or null. Reusable for any
+  // action (create now, edit/delete later). It auto-dismisses; the timer ref
+  // lets a new toast cancel the previous one's pending hide.
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
+
+  const hideToast = () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(null);
+  };
+
+  const showToast = (message, type = 'success') => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast({ message, type });
+    toastTimer.current = setTimeout(() => setToast(null), 3500);
+  };
 
   // Ask api.js for the list and store the result.
   const fetchEvents = async () => {
@@ -40,6 +64,15 @@ const EventsProvider = ({ children }) => {
     fetchEvents();
   }, []);
 
+  // Create a new event (POST /events). api.js auto-attaches the auth token, and
+  // the backend sets organizerId from it — so the caller never sends that.
+  // After it succeeds we refetch so the new event shows up in the list.
+  const createEvent = async (eventData) => {
+    const created = await api.post('/events', eventData);
+    await fetchEvents();
+    return created;
+  };
+
   // Get one event.
   const getEventById = async (id) => {
     //  If  list is already loaded, i.e. if the event I want is in memory, grabs it instantly, no request.
@@ -52,7 +85,20 @@ const EventsProvider = ({ children }) => {
 
   return (
     <EventsContext.Provider
-      value={{ events, loading, error, fetchEvents, getEventById }}
+      value={{
+        events,
+        loading,
+        error,
+        fetchEvents,
+        getEventById,
+        createEvent,
+        isCreateModalOpen,
+        openCreateModal,
+        closeCreateModal,
+        toast,
+        showToast,
+        hideToast,
+      }}
     >
       {children}
     </EventsContext.Provider>

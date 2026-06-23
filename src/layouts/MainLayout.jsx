@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router';
 import Header from '../components/layout/Header';
+import Toast from '../components/ui/Toast';
 
 // The outer shell shown on every page: header + page content + footer.
 // TODO: the footer is still a placeholder; it'll be extracted into a
@@ -20,6 +21,9 @@ const MainLayout = () => {
           © {new Date().getFullYear()} EventBox
         </div>
       </footer>
+
+      {/* Global toast outlet — shows transient confirmations (e.g. event added). */}
+      <Toast />
     </div>
   );
 };
