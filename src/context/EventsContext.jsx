@@ -13,7 +13,8 @@ const EventsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //"Highlights" events: upcoming events, fetched from /events/upcoming endpoint capped at 3 
+  //"Highlights" events: upcoming events, fetched from /events/upcoming endpoint capped at 3
+  const [upcoming, setUpcoming] = useState([]);
   const [upcomingLoading, setUpcomingLoading] = useState(true);
   const [upcomingError, setUpcomingError] = useState(null);
 

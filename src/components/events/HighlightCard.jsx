@@ -1,0 +1,51 @@
+import { Link, useLocation } from 'react-router';
+import { MdCalendarMonth } from 'react-icons/md';
+import { formatDate } from '../../utils/formatDate';
+
+
+const HighlightCard = ({ event }) => {
+  const location = useLocation();
+  const formattedDate = formatDate(event.date);
+
+  // API has no image, so reuse EventCard's placeholder, locked by id.
+  const imageUrl = `https://loremflickr.com/400/250/concert,festival?lock=${event.id}`;
+
+  return (
+    <Link
+      to={`/events/${event.id}`}
+      state={{ from: location.pathname }}
+      className="ticket-card group block bg-base-100 shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+    >
+      <figure className="overflow-hidden">
+        <img
+          src={imageUrl}
+          alt={event.title}
+          className="h-52 w-full object-cover transition duration-300 group-hover:scale-105"
+        />
+      </figure>
+
+      <div className="flex flex-col gap-4 px-6 pb-10 pt-5">
+
+        <h3 className="font-heading text-2xl font-semibold uppercase tracking-wide text-brand-brown-dark line-clamp-1">
+          {event.title}
+        </h3>
+
+
+        <p className="flex items-center gap-2 font-heading text-base font-medium uppercase tracking-wide text-brand-blue-dark">
+          <MdCalendarMonth className="size-6 shrink-0" />
+          {formattedDate}
+        </p>
+
+
+        <p className="font-text text-sm text-brand-brown line-clamp-2">
+          {event.description}
+        </p>
+
+
+        <span className="btn btn-primary mt-2 w-full">More Details</span>
+      </div>
+    </Link>
+  );
+};
+
+export default HighlightCard;
