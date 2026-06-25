@@ -10,7 +10,7 @@ const HighlightList = () => {
   // Three skeletons matching the real 3-up layout while loading.
   if (upcomingLoading)
     return (
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <EventCardSkeleton key={i} />
         ))}
@@ -28,7 +28,7 @@ const HighlightList = () => {
   if (upcoming.length === 0) return null;
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
       {upcoming.map((event) => (
         <HighlightCard key={event.id} event={event} />
       ))}

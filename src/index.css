@@ -79,6 +79,15 @@
     mask: radial-gradient(circle 10px at 10px 100%, #0000 96%, #000) 0 100% /
       20px 100% repeat-x;
   }
+
+  /* The same scalloped notches at the top edge of the white body, so the paper
+     looks torn where it overlaps the image (circle sits on the top edge). */
+  .ticket-body {
+    -webkit-mask: radial-gradient(circle 10px at 10px 0, #0000 96%, #000) 0 0 /
+      20px 100% repeat-x;
+    mask: radial-gradient(circle 10px at 10px 0, #0000 96%, #000) 0 0 / 20px
+      100% repeat-x;
+  }
 }
 
 /* Stop the browser's autofill from painting its own (pale blue/yellow)

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router';
 import { MdCalendarMonth } from 'react-icons/md';
 import { formatDate } from '../../utils/formatDate';
+import orangeAsterisk from '../../assets/orange-asterisk.png';
 
 
 const HighlightCard = ({ event }) => {
@@ -24,7 +25,7 @@ const HighlightCard = ({ event }) => {
         />
       </figure>
 
-      <div className="flex flex-col gap-4 px-6 pb-10 pt-5">
+      <div className="ticket-body relative z-10 -mt-4 flex flex-col gap-4 bg-base-100 px-6 pb-10 pt-8">
 
         <h3 className="font-heading text-2xl font-semibold uppercase tracking-wide text-brand-brown-dark line-clamp-1">
           {event.title}
@@ -42,7 +43,25 @@ const HighlightCard = ({ event }) => {
         </p>
 
 
-        <span className="btn btn-primary mt-2 w-full">More Details</span>
+        <span className="btn mt-2 w-full justify-center border-brand-blue-dark bg-brand-blue-dark text-white hover:border-brand-blue hover:bg-brand-blue">
+          {/* Icon + label shifted left as a group so the label sits centered */}
+          <span className="flex -translate-x-6 items-center gap-2">
+            <img
+              src={orangeAsterisk}
+              alt=""
+              className="size-10 shrink-0 object-contain"
+              // Fade the PNG's square edges so no border shows (same trick as
+              // the Create Event page asterisk).
+              style={{
+                WebkitMaskImage:
+                  'radial-gradient(circle, black 38%, transparent 68%)',
+                maskImage:
+                  'radial-gradient(circle, black 38%, transparent 68%)',
+              }}
+            />
+            More Details
+          </span>
+        </span>
       </div>
     </Link>
   );
