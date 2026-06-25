@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import orangeAsterisk from '../../assets/orange-asterisk.png';
+import blueLine from '../../assets/blue-dotted-line-with-asterik.png';
 
 
 const Hero = () => {
@@ -21,8 +23,24 @@ const Hero = () => {
         loop
         playsInline
       />
-      {/* Darkens the video for text contrast. */}
+
       <div className="absolute inset-0 bg-black/50" />
+
+
+      <img
+        src={orangeAsterisk}
+        alt=""
+        className="absolute left-4 top-6 w-12 lg:w-16 xl:left-[calc((100vw-1280px)/2)]"
+        style={{
+          WebkitMaskImage: 'radial-gradient(circle, black 38%, transparent 68%)',
+          maskImage: 'radial-gradient(circle, black 38%, transparent 68%)',
+        }}
+      />
+      <img
+        src={blueLine}
+        alt=""
+        className="absolute -bottom-20 left-2 hidden h-2/3 lg:block"
+      />
 
       <div className="container relative flex h-full flex-col justify-center">
         <h1
