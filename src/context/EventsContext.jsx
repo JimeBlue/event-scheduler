@@ -13,6 +13,10 @@ const EventsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //"Highlights" events: upcoming events, fetched from /events/upcoming endpoint capped at 3 
+  const [upcomingLoading, setUpcomingLoading] = useState(true);
+  const [upcomingError, setUpcomingError] = useState(null);
+
   // Create-event modal open/closed state, driven through named actions so any
   // component (the page button, the modal's own close control) toggles it the
   // same way without touching the setter directly.
@@ -59,9 +63,24 @@ const EventsProvider = ({ children }) => {
     }
   };
 
-  // Run fetchEvents once, right after the provider first mounts.
+  // Ask api.js for the upcoming events and keep only the first 3 for the Highlights section. 
+  const fetchUpcoming = async () => {
+    setUpcomingLoading(true);
+    setUpcomingError(null);
+    try {
+      const data = await api.get('/events/upcoming');
+      setUpcoming(data.slice(0, 3));
+    } catch (err) {
+      setUpcomingError(err.message);
+    } finally {
+      setUpcomingLoading(false);
+    }
+  };
+
+  // Run both fetches once, right after the provider first mounts.
   useEffect(() => {
     fetchEvents();
+    fetchUpcoming();
   }, []);
 
   // Create a new event (POST /events). api.js auto-attaches the auth token, and
@@ -90,6 +109,9 @@ const EventsProvider = ({ children }) => {
         loading,
         error,
         fetchEvents,
+        upcoming,
+        upcomingLoading,
+        upcomingError,
         getEventById,
         createEvent,
         isCreateModalOpen,
