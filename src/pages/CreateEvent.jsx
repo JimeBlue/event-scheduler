@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { useEvents } from '../context/EventsContext';
 import { useAuth } from '../context/AuthContext';
 import CreateEventHero from '../components/events/CreateEventHero';
@@ -8,6 +10,16 @@ import orangeAsterisk from '../assets/orange-asterisk.png';
 const CreateEvent = () => {
   const { openCreateModal, events } = useEvents();
   const { user } = useAuth();
+  const location = useLocation();
+
+  // When arriving with #my-events (e.g. from the user menu), scroll that
+  // section into view — React Router doesn't honour hash fragments by default.
+  useEffect(() => {
+    if (location.hash !== '#my-events') return;
+    document
+      .getElementById('my-events')
+      ?.scrollIntoView({ behavior: 'smooth' });
+  }, [location]);
 
   // The events this user organized: match each event's organizerId to the
   // logged-in user's id. String() guards against any number/string mismatch,
@@ -24,7 +36,7 @@ const CreateEvent = () => {
 
       <div className="container py-16">
         {/* The current user's own events, listed below the create button. */}
-        <section className="mt-12">
+        <section id="my-events" className="scroll-mt-24 mt-12">
           <div className="flex items-center gap-4">
             <img
               src={orangeAsterisk}

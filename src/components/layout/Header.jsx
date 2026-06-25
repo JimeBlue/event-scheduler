@@ -82,11 +82,10 @@ const Header = () => {
         </Link>
       </li>
       <li>
-        {/* TODO: route not built yet — placeholder for now. */}
-        <button type="button">
+        <Link to="/events/new#my-events">
           <FiCalendar className="h-5 w-5" />
           My events
-        </button>
+        </Link>
       </li>
       <li>
         <button type="button" onClick={handleLogout}>
