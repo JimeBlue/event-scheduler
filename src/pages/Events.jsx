@@ -1,3 +1,4 @@
+import EventsHero from '../components/layout/EventsHero';
 import EventList from '../components/events/EventList';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
@@ -8,8 +9,10 @@ const activeFilter = 'All Events';
 
 const Events = () => {
   return (
+    <>
+      <EventsHero />
 
-    <div className="bg-brand-yellow py-16">
+      <div className="bg-brand-yellow py-16">
 
       <div className="container py-4">
         <div className="flex items-start justify-between gap-4">
@@ -49,7 +52,8 @@ const Events = () => {
           <EventList />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
