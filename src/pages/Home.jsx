@@ -1,5 +1,6 @@
 import Hero from '../components/layout/Hero';
 import HighlightList from '../components/events/HighlightList';
+import HomeCta from '../components/home/HomeCta';
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
           <HighlightList />
         </div>
       </section>
+      <HomeCta />
     </>
   );
 };
