@@ -17,7 +17,7 @@ import logo from '../../assets/logo.png';
 // menu and the mobile slide-over so the two can't drift apart.
 const navLinks = [
   { to: '/', label: 'Home', end: true },
-  { to: '/events', label: 'All Events' },
+  { to: '/events', label: 'All Events', end: true },
 ];
 
 // NavLink sets aria-current="page" on the active route — use that to underline
