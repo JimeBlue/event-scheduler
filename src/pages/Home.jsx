@@ -1,14 +1,13 @@
+import HighlightList from '../components/events/HighlightList';
+
 const Home = () => {
   return (
-    <div>
-      <h1 className="font-heading text-4xl text-brand-blue">EventBox</h1>
-      <p className="font-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.
-      </p>
-    </div>
+    <section className="container py-12">
+      <h2 className="mb-8 font-heading text-3xl font-semibold uppercase tracking-wide text-brand-blue">
+        Highlights
+      </h2>
+      <HighlightList />
+    </section>
   );
 };
 
