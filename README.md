@@ -1,34 +1,82 @@
-# WBS CODING SCHOOL React Template
+# EventBox
 
-## React <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React Logo" width="30" height="30" /> + TailwindCSS <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind Logo" width="30" height="30" /> + DaisyUI <img src="https://raw.githubusercontent.com/saadeghi/daisyui-images/master/images/daisyui-logo/favicon-192.png" alt="DaisyUI Logo"  width="30" height="30" /> built with Vite <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Vitejs-logo.svg" alt="Vite Logo" width="30" height="30" />
+A React event-scheduler app: browse upcoming events, view details on a map, and — once signed in — create and manage your own.
 
-![image](https://github.com/user-attachments/assets/e364c75d-d6b2-4cbd-aa7a-870f7674e528)
+Built with **React 19**, **React Router 8**, **TailwindCSS 4**, and **DaisyUI 5**, bundled with **Vite**.
 
+## Features
 
-This is a template with **React 19**, **TailwindCSS 4**, and **DaisyUI 5**, provided by **[WBS CODING SCHOOL](https://www.wbscodingschool.com/)**.
+- **Browse events** — a public events listing and an individual event details page with a location map.
+- **Authentication** — a single tabbed sign in / sign up page (`/login`, `/signup`) backed by an `AuthContext`.
+- **Create & manage events** — a protected `/events/new` page where signed-in users create events and see their own under "My Events".
+- **Responsive header** — sticky navbar with desktop nav, a mobile slide-over menu, and an account dropdown.
 
-## Clone into directory
+## Tech stack
+
+| Area       | Library                          |
+| ---------- | -------------------------------- |
+| UI         | React 19                         |
+| Routing    | React Router 8                   |
+| Styling    | TailwindCSS 4 + DaisyUI 5        |
+| Icons      | react-icons                      |
+| Build tool | Vite                             |
+
+## Getting started
+
+### Install
 
 ```sh
-git clone git@github.com:WebDev-WBSCodingSchool/wbs-react-template.git <directory>
+npm i
 ```
 
-## Install
+### Environment
+
+Create a `.env` file in the project root and point it at the API:
 
 ```sh
-cd <directory> && npm i
+VITE_API_URL=<your-api-base-url>
 ```
 
-## Code
+### Run
 
 ```sh
 npm run dev
 ```
 
 ```sh
-VITE v6.2.0 ready in 508 ms
  ➜ Local: http://localhost:5173/
- ➜ Network: use --host to expose
- ➜ press h + enter to show help
- /*! 🌼 daisyUI 5 */
+```
+
+## Scripts
+
+| Script            | Description                       |
+| ----------------- | --------------------------------- |
+| `npm run dev`     | Start the Vite dev server         |
+| `npm run build`   | Build for production              |
+| `npm run preview` | Preview the production build      |
+| `npm run lint`    | Lint the project with ESLint      |
+
+## Routes
+
+| Path           | Access    | Page                                   |
+| -------------- | --------- | -------------------------------------- |
+| `/`            | Public    | Home                                   |
+| `/events`      | Public    | All events                             |
+| `/events/:id`  | Public    | Event details                          |
+| `/login`       | Public    | Sign in (tabbed auth page)             |
+| `/signup`      | Public    | Sign up (tabbed auth page)             |
+| `/events/new`  | Protected | Create event / My events               |
+| `*`            | Public    | Not found                              |
+
+## Project structure
+
+```
+src/
+├── assets/        # Images and graphics
+├── components/    # auth, events, home, layout, ui
+├── context/       # AuthContext, EventsContext
+├── layouts/       # MainLayout, ProtectedLayout
+├── pages/         # Route-level pages
+├── services/      # API calls
+└── utils/         # Helpers (formatting, validation)
 ```

@@ -99,7 +99,7 @@ const SignInForm = () => {
 
     <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Email*</span>
+        <span className="font-text text-sm">Your email address*</span>
         <input
           type="email"
           name="email"
@@ -113,7 +113,7 @@ const SignInForm = () => {
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="font-text text-sm">Password*</span>
+        <span className="font-text text-sm">Your password*</span>
         <PasswordInput
           value={formData.password}
           onChange={handleChange}
@@ -131,7 +131,7 @@ const SignInForm = () => {
         disabled={submitting}
         className="btn mt-2 border-brand-blue-dark bg-brand-blue-dark text-white hover:bg-brand-blue"
       >
-        {submitting ? 'Signing in…' : 'Sign In'}
+        {submitting ? 'Signing in…' : 'Get started now'}
       </button>
     </form>
   );

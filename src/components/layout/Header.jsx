@@ -17,7 +17,7 @@ import logo from '../../assets/logo.png';
 // menu and the mobile slide-over so the two can't drift apart.
 const navLinks = [
   { to: '/', label: 'Home', end: true },
-  { to: '/events', label: 'All Events' },
+  { to: '/events', label: 'All Events', end: true },
 ];
 
 // NavLink sets aria-current="page" on the active route — use that to underline
@@ -82,11 +82,10 @@ const Header = () => {
         </Link>
       </li>
       <li>
-        {/* TODO: route not built yet — placeholder for now. */}
-        <button type="button">
+        <Link to="/events/new#my-events">
           <FiCalendar className="h-5 w-5" />
           My events
-        </button>
+        </Link>
       </li>
       <li>
         <button type="button" onClick={handleLogout}>
@@ -98,7 +97,7 @@ const Header = () => {
   );
 
   return (
-    <header className="border-b border-base-300 bg-base-100 font-heading">
+    <header className="sticky top-0 z-50 border-b border-base-300 bg-base-100 font-heading">
       <div className="navbar container h-20 min-h-20">
         {/* LEFT: logo */}
         <div className="navbar-start">

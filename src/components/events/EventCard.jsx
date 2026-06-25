@@ -8,8 +8,9 @@ const EventCard = ({ event }) => {
   const location = useLocation();
   const formattedDate = formatDate(event.date);
 
-  // API has no image, so I use an event-themed placeholder from LoremFlickr.
-  const imageUrl = `https://loremflickr.com/400/250/concert,festival?lock=${event.id}`;
+  // API has no image, so use a placeholder from Picsum — the seed keeps each
+  // event's image stable across renders.
+  const imageUrl = `https://picsum.photos/seed/${event.id}/400/250`;
 
   return (
     <Link

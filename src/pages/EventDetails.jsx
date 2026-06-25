@@ -109,7 +109,7 @@ const EventDetails = () => {
 
                 <div className="h-full">
                   <img
-                    src={`https://loremflickr.com/800/600/concert,festival?lock=${event.id}`}
+                    src={`https://picsum.photos/seed/${event.id}/800/600`}
                     alt={event.title}
                     className="h-full max-h-[600px] min-h-72 w-full rounded-xl object-cover"
                   />
