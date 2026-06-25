@@ -1,4 +1,4 @@
-import EventsHero from '../components/layout/EventsHero';
+import EventsHero from '../components/events/EventsHero';
 import EventList from '../components/events/EventList';
 import bePartOfIt from '../assets/be-part-of-it.png';
 
