@@ -19,7 +19,7 @@ const Auth = ({ defaultTab = 'signin' }) => {
             className={`tab ${isSignIn ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('signin')}
           >
-            Sign In
+            I already have an account
           </button>
           <button
             type="button"
@@ -27,15 +27,24 @@ const Auth = ({ defaultTab = 'signin' }) => {
             className={`tab ${isSignIn ? '' : 'tab-active'}`}
             onClick={() => setActiveTab('signup')}
           >
-            Sign Up
+            I am new here
           </button>
         </div>
 
         {isSignIn ? (
           <>
-            <h1 className="mt-8 font-heading text-5xl font-medium">Sign In</h1>
+            <h1 className="mt-8 font-heading text-5xl font-medium">
+              Welcome back!
+            </h1>
             <p className="mt-4 font-text text-base-content">
-              Welcome back — sign in to create events.
+              New to Eventbox?{' '}
+              <button
+                type="button"
+                onClick={() => setActiveTab('signup')}
+                className="cursor-pointer font-medium text-brand-blue underline-offset-2 hover:underline"
+              >
+                Register here
+              </button>
             </p>
             <SignInForm />
           </>
