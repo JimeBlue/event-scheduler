@@ -1,22 +1,35 @@
 import { Link, useLocation } from 'react-router';
+import { useInView } from 'react-intersection-observer';
 import { MdCalendarMonth } from 'react-icons/md';
 import { formatDate } from '../../utils/formatDate';
 import orangeAsterisk from '../../assets/orange-asterisk.png';
 
 
-const HighlightCard = ({ event }) => {
+const HighlightCard = ({ event, index = 0 }) => {
   const location = useLocation();
   const formattedDate = formatDate(event.date);
+
+  // Reveal the card with a fade + slide-up the first time it scrolls into view;
+  // the per-card delay (from index) staggers the three cards. The wrapper owns
+  // this transition so it stays independent of the Link's hover transition.
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
 
   // API has no image, so reuse EventCard's placeholder, locked by id.
   const imageUrl = `https://loremflickr.com/400/250/concert,festival?lock=${event.id}`;
 
   return (
-    <Link
-      to={`/events/${event.id}`}
-      state={{ from: location.pathname }}
-      className="ticket-card group block bg-base-100 shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none ${
+        inView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+      }`}
+      style={{ transitionDelay: `${index * 120}ms` }}
     >
+      <Link
+        to={`/events/${event.id}`}
+        state={{ from: location.pathname }}
+        className="ticket-card group block bg-base-100 shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+      >
       <figure className="overflow-hidden">
         <img
           src={imageUrl}
@@ -63,7 +76,8 @@ const HighlightCard = ({ event }) => {
           </span>
         </span>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

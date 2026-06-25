@@ -29,8 +29,8 @@ const HighlightList = () => {
 
   return (
     <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
-      {upcoming.map((event) => (
-        <HighlightCard key={event.id} event={event} />
+      {upcoming.map((event, index) => (
+        <HighlightCard key={event.id} event={event} index={index} />
       ))}
     </div>
   );
