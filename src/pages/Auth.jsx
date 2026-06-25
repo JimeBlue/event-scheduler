@@ -12,7 +12,7 @@ const Auth = ({ defaultTab = 'signin' }) => {
   return (
     <div className="bg-brand-blue-dark px-6 py-12 sm:px-12 sm:py-24 lg:px-0">
       <div className="container max-w-2xl rounded-lg bg-base-100 py-12">
-        <div role="tablist" className="tabs tabs-box">
+        <div role="tablist" className="tabs tabs-box w-fit">
           <button
             type="button"
             role="tab"
