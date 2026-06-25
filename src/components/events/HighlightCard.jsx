@@ -14,8 +14,8 @@ const HighlightCard = ({ event, index = 0 }) => {
   // this transition so it stays independent of the Link's hover transition.
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
 
-  // API has no image, so reuse EventCard's placeholder, locked by id.
-  const imageUrl = `https://loremflickr.com/400/250/concert,festival?lock=${event.id}`;
+  // API has no image, so reuse EventCard's placeholder, seeded by id.
+  const imageUrl = `https://picsum.photos/seed/${event.id}/400/250`;
 
   return (
     <div
